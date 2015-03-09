@@ -134,6 +134,13 @@ if !exists("*Autopep8(...)")
         endtry
 
     endfunction
+
+	function Autopep8Range(...) range
+		let l:firstline = get(a:, 1, a:firstline)
+		let l:lastline = get(a:, 2, a:lastline)
+		call Autopep8("--range " . l:firstline . " " . l:lastline)
+	endfunction
+
 endif
 
 " Add mappings, unless the user didn't want this.
@@ -143,5 +150,6 @@ if !exists("no_plugin_maps") && !exists("no_autopep8_maps")
     if !hasmapto('Autopep8(')
         noremap <buffer> <F8> :call Autopep8()<CR>
         command! -nargs=? -bar Autopep8 call Autopep8(<f-args>) 
+        command! -nargs=* -range Autopep8Range call Autopep8Range(<line1>, <line2>)
     endif
 endif
