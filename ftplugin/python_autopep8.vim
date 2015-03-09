@@ -15,9 +15,24 @@ endif
 let b:loaded_autopep8_ftplugin=1
 
 if !exists("*Autopep8(...)")
+	function s:sensible_args(args)
+		let l:args_list = split(a:args)
+		let l:converted_args = []
+
+		for part in l:args_list
+			if part =~ "^--"
+				let part = " ". part
+			endif
+			call add(l:converted_args, part)
+		endfor
+
+		return l:converted_args
+	endfunction
+
     function Autopep8(...)
 
         let l:args = get(a:, 1, '')
+		let l:converted_args = s:sensible_args(l:args)
 
         if exists("g:autopep8_cmd")
             let autopep8_cmd=g:autopep8_cmd
@@ -66,7 +81,7 @@ if !exists("*Autopep8(...)")
             let autopep8_indent_size=""
         endif
 
-        let execmdline=autopep8_cmd.autopep8_pep8_passes.autopep8_selects.autopep8_ignores.autopep8_max_line_length.autopep8_aggressive.autopep8_indent_size.l:args
+        let execmdline=autopep8_cmd.autopep8_pep8_passes.autopep8_selects.autopep8_ignores.autopep8_max_line_length.autopep8_aggressive.autopep8_indent_size.join(l:converted_args)
         let tmpfile = tempname()
         let tmpdiff = tempname()
         let index = 0
